@@ -55,8 +55,7 @@ function showCountdown(date) {
   // Як це пофіксити?
 
   if (seconds === 0) {
-    let isStop = Object.values(dateObj).every(el => el === 0);
-    if (isStop) stopCountdown();
+    if (Object.values(dateObj).every(val => val === 0)) stopCountdown();
   }
 }
 
