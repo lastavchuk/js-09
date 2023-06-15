@@ -1,5 +1,7 @@
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import { Report } from 'notiflix/build/notiflix-report-aio';
 
 const options = {
   enableTime: true,
@@ -15,8 +17,6 @@ const options = {
   },
 };
 
-flatpickr('input#datetime-picker', options);
-
 const refs = {
   btnStart: document.querySelector('button[data-start]'),
   spanDays: document.querySelector('span[data-days]'),
@@ -24,6 +24,8 @@ const refs = {
   spanMinutes: document.querySelector('span[data-minutes]'),
   spanSeconds: document.querySelector('span[data-seconds]'),
 };
+
+flatpickr('input#datetime-picker', options);
 
 refs.btnStart.disabled = true;
 
@@ -37,22 +39,19 @@ refs.btnStart.addEventListener('click', () => {
       clearInterval(intervalId);
       intervalId = null;
     }
-    intervalId = setInterval(showCountdown, 1000, userDate);
+    intervalId = setInterval(startCountdown, 1000, userDate);
+    refs.btnStart.disabled = true;
   } else wrongDate();
 });
 
-function showCountdown(date) {
+function startCountdown(date) {
   const dateObj = convertMs(date - Date.now());
   const { days, hours, minutes, seconds } = dateObj;
 
-  refs.spanDays.textContent = pad(days);
-  refs.spanHours.textContent = pad(hours);
-  refs.spanMinutes.textContent = pad(minutes);
-  refs.spanSeconds.textContent = pad(seconds);
-
-  // Коли закінчується відлік, остання секунда залишається на екрані
-  // поки не клікнути OK на модальному вікні
-  // Як це пофіксити?
+  refs.spanDays.textContent = addLeadingZero(days);
+  refs.spanHours.textContent = addLeadingZero(hours);
+  refs.spanMinutes.textContent = addLeadingZero(minutes);
+  refs.spanSeconds.textContent = addLeadingZero(seconds);
 
   if (seconds === 0) {
     if (Object.values(dateObj).every(val => val === 0)) stopCountdown();
@@ -63,10 +62,10 @@ function stopCountdown() {
   clearInterval(intervalId);
   intervalId = null;
   refs.btnStart.disabled = true;
-  alert('Time is up');
+  Report.success('Time is up', '', 'OK');
 }
 
-function pad(value) {
+function addLeadingZero(value) {
   return value.toString().padStart(2, '0');
 }
 
@@ -86,5 +85,5 @@ function convertMs(ms) {
 
 function wrongDate() {
   refs.btnStart.disabled = true;
-  alert('Please choose a date in the future');
+  Notify.failure('Please choose a date in the future', { clickToClose: true });
 }
