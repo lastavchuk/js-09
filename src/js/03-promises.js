@@ -1,33 +1,32 @@
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { Report } from 'notiflix/build/notiflix-report-aio';
+const form = document.querySelector('.form');
+// const refs = {
+//   form: document.querySelector('.form'),
+//   // inputs: [],
+// };
 
-const refs = {
-  form: document.querySelector('.form'),
-  inputDelay: document.querySelector('input[name="delay"]'),
-  inputStep: document.querySelector('input[name="step"]'),
-  inputAmount: document.querySelector('input[name="amount"]'),
-  // inputs: [],
-};
-
-refs.form.addEventListener('submit', evt => {
+form.addEventListener('submit', evt => {
   evt.preventDefault();
 
   // Є сенс таким чином робити змінні?
   // for (const el of refs.form) {
   //   if (el.nodeName === 'INPUT') refs.inputs[el.name] = el.value;
   // }
+  // Бо у варіанті, що нижче постійно потрібно слідкувати
+  // за кількістю інпутів
 
-  if (
-    !refs.inputDelay.value ||
-    !refs.inputStep.value ||
-    !refs.inputAmount.value
-  ) {
+  let delay = evt.target.elements.delay.value;
+  let step = evt.target.elements.step.value;
+  let amount = evt.target.elements.amount.value;
+
+  if (!delay || !step || !amount) {
     Report.warning('All fields must be filled', '', 'OK');
     return;
   }
-  const delay = Number(refs.inputDelay.value);
-  const step = Number(refs.inputStep.value);
-  const amount = Number(refs.inputAmount.value);
+  delay = Number(delay);
+  step = Number(step);
+  amount = Number(amount);
 
   if (Number.isNaN(delay) || Number.isNaN(step) || Number.isNaN(amount)) {
     Report.warning('Must be all numbers', '', 'OK');
