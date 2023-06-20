@@ -45,17 +45,14 @@ refs.btnStart.addEventListener('click', () => {
 });
 
 function startCountdown(date) {
-  const dateObj = convertMs(date - Date.now());
-  const { days, hours, minutes, seconds } = dateObj;
+  const { days, hours, minutes, seconds } = convertMs(date - Date.now());
 
   refs.spanDays.textContent = addLeadingZero(days);
   refs.spanHours.textContent = addLeadingZero(hours);
   refs.spanMinutes.textContent = addLeadingZero(minutes);
   refs.spanSeconds.textContent = addLeadingZero(seconds);
 
-  if (seconds === 0) {
-    if (Object.values(dateObj).every(val => val === 0)) stopCountdown();
-  }
+  if (date - Date.now() < 1000) stopCountdown();
 }
 
 function stopCountdown() {
